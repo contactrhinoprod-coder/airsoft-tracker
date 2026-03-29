@@ -66,13 +66,57 @@ class _GameScreenState extends State<GameScreen> {
     _gameService.updateStatus(widget.gameCode, newStatus);
   }
 
-  void _addPing(LatLng position) {
-    _gameService.addPing(
-      widget.gameCode,
-      position.latitude,
-      position.longitude,
-      widget.playerName,
+  void _addPing(LatLng position) async {
+    final TextEditingController commentController = TextEditingController();
+    final result = await showDialog<String>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: const Color(0xFF1A1A2E),
+            title: const Text(
+              'Nouveau ping',
+              style: TextStyle(color: Colors.white),
+            ),
+            content: TextField(
+              controller: commentController,
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(
+                hintText: 'Ajouter un commentaire...',
+                hintStyle: TextStyle(color: Colors.white38),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.yellow),
+                ),
+              ),
+              autofocus: true,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, null),
+                child: const Text(
+                  'Annuler',
+                  style: TextStyle(color: Colors.white38),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, commentController.text),
+                child: const Text(
+                  'Poser',
+                  style: TextStyle(color: Colors.yellow),
+                ),
+              ),
+            ],
+          ),
     );
+
+    if (result != null) {
+      _gameService.addPing(
+        widget.gameCode,
+        position.latitude,
+        position.longitude,
+        widget.playerName,
+        comment: result,
+      );
+    }
   }
 
   bool _isOffline(dynamic updatedAt) {
@@ -128,6 +172,7 @@ class _GameScreenState extends State<GameScreen> {
       final lat = data['lat'] as double;
       final lng = data['lng'] as double;
       final playerName = data['playerName'] as String;
+      final comment = data['comment'] as String? ?? '';
 
       markers.add(
         Marker(
@@ -136,7 +181,11 @@ class _GameScreenState extends State<GameScreen> {
           icon: BitmapDescriptor.defaultMarkerWithHue(
             BitmapDescriptor.hueYellow,
           ),
-          infoWindow: InfoWindow(title: '📍 $playerName'),
+          infoWindow: InfoWindow(
+            title: '📍 $playerName',
+            snippet: comment.isNotEmpty ? comment : 'Appuie pour supprimer',
+            onTap: () => _gameService.deletePing(widget.gameCode, ping.id),
+          ),
         ),
       );
     }

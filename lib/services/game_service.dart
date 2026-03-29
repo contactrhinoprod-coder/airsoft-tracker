@@ -71,8 +71,9 @@ class GameService {
     String gameCode,
     double lat,
     double lng,
-    String playerName,
-  ) async {
+    String playerName, {
+    String comment = '',
+  }) async {
     final pingId = DateTime.now().millisecondsSinceEpoch.toString();
     await _db
         .collection('games')
@@ -83,6 +84,7 @@ class GameService {
           'lat': lat,
           'lng': lng,
           'playerName': playerName,
+          'comment': comment,
           'createdAt': FieldValue.serverTimestamp(),
         });
 
@@ -94,6 +96,15 @@ class GameService {
           .doc(pingId)
           .delete();
     });
+  }
+
+  Future<void> deletePing(String gameCode, String pingId) async {
+    await _db
+        .collection('games')
+        .doc(gameCode)
+        .collection('pings')
+        .doc(pingId)
+        .delete();
   }
 
   Stream<QuerySnapshot> pingsStream(String gameCode) {
