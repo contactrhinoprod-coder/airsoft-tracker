@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "293212618799",
+    "project_id": "alpha-bravo-charlie-9c4b2",
+    "storage_bucket": "alpha-bravo-charlie-9c4b2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:293212618799:android:22e92dae9ef390be2a86da",
+        "android_client_info": {
+          "package_name": "com.example.airsoft_tracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxuz3PIVao1BhtFPTlZtEtZIhM0IvX9CY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
